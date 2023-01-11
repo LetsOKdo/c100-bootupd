@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -euo pipefail
+
+pushd data
+cpp -x assembler-with-cpp -E -I "../Linux_for_Tegra/source/kernel/hardware/nvidia/soc/tegra/kernel-include" tegra210-p3448-common-sdmmc3.dts tegra210-p3448-common-sdmmc3.dts.tmp
+dtc -O dtb -o tegra210-p3448-common-sdmmc3.dtbo -@ tegra210-p3448-common-sdmmc3.dts.tmp
+rm tegra210-p3448-common-sdmmc3.dts.tmp
+mkimage -C none -A arm64 -T script -d u-boot-preboot.cmd u-boot-preboot.scr
+popd

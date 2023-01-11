@@ -1,0 +1,9 @@
+[Unit]
+Description=Update nv_boot_control.conf with vendor supplied file
+Before=nv-oem-config.service
+
+[Service]
+ExecStart=/bin/cp /usr/local/share/nv_boot_control.conf /etc/nv_boot_control.conf
+
+[Install]
+WantedBy=nv-oem-config.target
