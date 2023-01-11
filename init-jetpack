@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -euo pipefail
+
+source /etc/os-release
+
+if [[ "${ID_LIKE:=}" == "debian" ]]
+then
+    sudo apt-get update
+    sudo apt-get install -y libxml2-utils
+fi
+
+BSP_BINARY="Jetson-210_Linux_R32.7.3_aarch64.tbz2"
+BSP_SOURCE="public_sources.tbz2"
+ROOTFS_BINARY="Tegra_Linux_Sample-Root-Filesystem_R32.7.3_aarch64.tbz2"
+
+# Download 
+# * Driver Package (BSP)
+# * Sample Root Filesystem
+# * Driver Package (BSP) Sources
+#from https://developer.nvidia.com/embedded/linux-tegra-r3273
+ARCHIVE_AVAILABLE="true"
+for i in "$BSP_BINARY" "$BSP_SOURCE" "$ROOTFS_BINARY"
+do
+    if [[ ! -f "$i" ]]
+    then
+        ARCHIVE_AVAILABLE="false"
+        echo "$i is missing!"
+    fi
+done
+if ! $ARCHIVE_AVAILABLE
+then
+    exit 1
+fi
+
+echo "Decompressing $BSP_BINARY..."
+tar xf $BSP_BINARY
+
+echo "Decompressing $BSP_SOURCE..."
+tar xf $BSP_SOURCE
+
+for i in u-boot kernel
+do
+    mkdir "Linux_for_Tegra/source/$i"
+    pushd "Linux_for_Tegra/source/$i"
+    echo "Decompressing ${i}_src.tbz2..."
+    tar xf ../public/${i}_src.tbz2
+    popd
+done
+
+pushd "Linux_for_Tegra/rootfs"
+echo "Decompressing $ROOTFS_BINARY..."
+sudo tar xpf ../../$ROOTFS_BINARY
+popd
+
+if [[ "$ID_LIKE" == "debian" ]]
+then
+    pushd "Linux_for_Tegra"
+    echo "Updating rootfs..."
+    sudo ./apply_binaries.sh
+    popd
+else
+    echo "Non Debian system does not support apply_binaries.sh. Skipping."
+fi
+
+echo "JetPack development environment has been set up."
