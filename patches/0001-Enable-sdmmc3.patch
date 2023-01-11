@@ -1,0 +1,65 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ZHANG Yuntian <yt@radxa.com>
+Date: Mon, 9 Jan 2023 15:36:49 +0800
+Subject: [PATCH] Enable sdmmc3
+
+Signed-off-by: ZHANG Yuntian <yt@radxa.com>
+---
+ arch/arm/dts/tegra210-p3450-0000.dts | 8 +++-----
+ board/nvidia/p3450-0000/p3450-0000.c | 6 ++++++
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/dts/tegra210-p3450-0000.dts b/arch/arm/dts/tegra210-p3450-0000.dts
+index e19f5825b8..6066383131 100644
+--- a/arch/arm/dts/tegra210-p3450-0000.dts
++++ b/arch/arm/dts/tegra210-p3450-0000.dts
+@@ -7,7 +7,7 @@
+ #include "tegra210.dtsi"
+ 
+ / {
+-	model = "NVIDIA Jetson Nano Developer Kit";
++	model = "OKdo Nano C100";
+ 	compatible = "nvidia,p3450-0000", "nvidia,tegra210";
+ 
+ 	chosen {
+@@ -21,7 +21,7 @@
+ 		i2c3 = "/i2c@7000c500";
+ 		i2c4 = "/i2c@7000c700";
+ 		mmc0 = "/sdhci@700b0600";
+-		mmc1 = "/sdhci@700b0000";
++		mmc1 = "/sdhci@700b0400";
+ 		spi0 = "/spi@70410000";
+ 		usb0 = "/usb@7d000000";
+ 		usb1 = "/xusb@70090000";
+@@ -90,10 +90,8 @@
+ 		};
+ 	};
+ 
+-	sdhci@700b0000 {
++	sdhci@700b0400 {
+ 		status = "okay";
+-		cd-gpios = <&gpio TEGRA_GPIO(Z, 1) GPIO_ACTIVE_LOW>;
+-		power-gpios = <&gpio TEGRA_GPIO(Z, 3) GPIO_ACTIVE_HIGH>;
+ 		bus-width = <4>;
+ 	};
+ 
+diff --git a/board/nvidia/p3450-0000/p3450-0000.c b/board/nvidia/p3450-0000/p3450-0000.c
+index f4212ab822..ffc54c9183 100644
+--- a/board/nvidia/p3450-0000/p3450-0000.c
++++ b/board/nvidia/p3450-0000/p3450-0000.c
+@@ -34,6 +34,12 @@ void pin_mux_mmc(void)
+ 	if (ret)
+ 		printf("i2c_write 0 0x3c 0x27 failed: %d\n", ret);
+ 
++	/* Enable LDO6 for microSD on carrier board */
++	val = 0xF2;
++	ret = dm_i2c_write(dev, MAX77620_CNFG1_L6_REG, &val, 1);
++	if (ret)
++			printf("i2c_write 0 0x3c 0x2f failed: %d\n", ret);
++
+ 	/* Disable LDO4 discharge */
+ 	ret = dm_i2c_read(dev, MAX77620_CNFG2_L4_REG, &val, 1);
+ 	if (ret) {
+-- 
+2.39.0
+

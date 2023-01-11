@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ZHANG Yuntian <yt@radxa.com>
+Date: Wed, 11 Jan 2023 15:00:02 +0800
+Subject: [PATCH] Force sdmmc3 overlay to be loaded on boot
+
+Signed-off-by: ZHANG Yuntian <yt@radxa.com>
+---
+ cmd/pxe_utils.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/cmd/pxe_utils.c b/cmd/pxe_utils.c
+index 0e20fe7ec7..fa36057dca 100644
+--- a/cmd/pxe_utils.c
++++ b/cmd/pxe_utils.c
+@@ -1310,11 +1310,14 @@ void destroy_pxe_menu(struct pxe_menu *cfg)
+  * files it includes). The resulting pxe_menu struct can be free()'d by using
+  * the destroy_pxe_menu() function.
+  */
++static const char sdmmc3_overlay[] = "/boot/tegra210-p3448-common-sdmmc3.dtbo";
+ struct pxe_menu *parse_pxefile(cmd_tbl_t *cmdtp, unsigned long menucfg)
+ {
+ 	struct pxe_menu *cfg;
+ 	char *buf;
+ 	int r;
++	struct list_head *pos, *n;
++	struct pxe_label *label;
+ 
+ 	cfg = malloc(sizeof(struct pxe_menu));
+ 
+@@ -1334,6 +1337,31 @@ struct pxe_menu *parse_pxefile(cmd_tbl_t *cmdtp, unsigned long menucfg)
+ 		return NULL;
+ 	}
+ 
++	list_for_each_safe(pos, n, &cfg->labels) {
++		label = list_entry(pos, struct pxe_label, list);
++
++		if (!label->fdtoverlays) {
++			label->fdtoverlays = malloc(sizeof(sdmmc3_overlay));
++			if (label->fdtoverlays) {
++				memcpy(label->fdtoverlays, sdmmc3_overlay, sizeof(sdmmc3_overlay));
++			} else {
++				printf("Unable to allocate memory for fdtoverlays injection!\n");
++			}
++		} else {
++			r = strlen(label->fdtoverlays);
++			buf = malloc(r + sizeof(sdmmc3_overlay));
++			if (buf) {
++				memcpy(buf, label->fdtoverlays, r);
++				buf[r] = ' ';
++				memcpy(buf + r + 1, sdmmc3_overlay, sizeof(sdmmc3_overlay));
++				free(label->fdtoverlays);
++				label->fdtoverlays = buf;
++			} else {
++				printf("Unable to allocate memory for fdtoverlays injection!\n");
++			}
++		}
++	}
++
+ 	return cfg;
+ }
+ 
+-- 
+2.39.0
+

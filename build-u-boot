@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+pushd Linux_for_Tegra/bootloader/t210ref/p3450-0000
+if [[ ! -f u-boot.bin.bak ]]
+then
+    mv u-boot.bin u-boot.bin.bak
+fi
+popd
+
+pushd u-boot
+git switch --detach tegra-l4t-r32.7.3
+git am ../patches/*.patch
+make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- distclean p3450-0000_defconfig all
+cp u-boot{,.bin,.dtb,-dtb.bin} ../Linux_for_Tegra/bootloader/t210ref/p3450-0000
+popd
