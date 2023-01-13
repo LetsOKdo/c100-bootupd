@@ -1,0 +1,8 @@
+[Unit]
+Description=Update OKdo Nano C100 bootloader
+
+[Service]
+ExecStart=/usr/sbin/c100-bootupd
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+# Small bug number is very probable for us.
+c100-bootupd: improbable-bug-number-in-closes
+# Need to depends on nv-oem-config.target to launch on boot.
+c100-bootupd: systemd-service-file-refers-to-unusual-wantedby-target

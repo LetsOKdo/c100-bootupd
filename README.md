@@ -26,22 +26,31 @@ Please first download the following Jetson Linux R32.7.3 archives from [NVIDIA](
 * Sample Root Filesystem: [Tegra_Linux_Sample-Root-Filesystem_R32.7.3_aarch64.tbz2](https://developer.nvidia.com/downloads/remeleasev73t210tegralinusample-root-filesystemr3273aarch64tbz2)
 * Driver Package (BSP) Sources: [public_sources.tbz2](https://developer.nvidia.com/downloads/remack-sdksjetpack-463r32releasev73sourcest210publicsourcestbz2)
 
-Then please follow these steps to build and prepare your OKdo Nano C100:
+The following steps manually prepared your OKdo Nano C100 for both eMMC and microSD booting:
 
 ```bash
-./build-u-boot
-# Put your C100 in recover mode
-./flash-emmc
+# Put your C100 in recover mode first
+make flash
 # Once the flash completes, C100 will reboot.
+# ################################
+# If you want to enable microSD booting, please follow the reset of the guide:
 # Press Ctrl+C in serial console to interrupt U-Boot, and execute:
 #     ums 0 0
 # to mount internal eMMC on your computer.
 # We assume it is shown as /dev/sdc
 sudo mount /dev/sdc1 /mnt
-./build-data
-sudo ./flash-data
+make flash-data
 sudo umount /mnt
 # In console, press Ctrl+C to interrupt ums command, and execute:
 #     reset
 # to reboot C100.
+```
+
+## Create bootloader update image
+
+The following steps create a modified microSD image that can be used to automatically update eMMC bootloader:
+
+```bash
+# Currently the original image has to be name as sd-blob-b01.img
+make image
 ```

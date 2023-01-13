@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -euo pipefail
-
-pushd Linux_for_Tegra
-sudo ./flash.sh -r jetson-nano-emmc mmcblk0p1
-popd

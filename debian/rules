@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/architecture.mk
+
+%:
+	dh $@
+
+override_dh_builddeb:
+	dh_builddeb -- -Zxz
+
+override_dh_clean:
+	:
+
+override_dh_update_autotools_config:
+	:
+
+override_dh_installsystemd:
+	dh_installsystemd --name=c100-bootupd_oem
+	dh_installsystemd --name=c100-bootupd

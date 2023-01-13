@@ -1,0 +1,19 @@
+Source: c100-bootupd
+Maintainer: "Radxa Computer Co., Ltd" <dev@radxa.com>
+Section: libs
+Priority: optional
+Standards-Version: 4.6.0
+Build-Depends: debhelper (>=12~),
+               devscripts,
+               lintian,
+               pandoc,
+               shellcheck,
+
+Package: c100-bootupd
+Architecture: all
+Section: admin
+Priority: optional
+Depends: ${misc:Depends},
+Description: OKdo Nano C100 Bootloader Updater
+ This package will update your C100's bootloader.
+ Not normally required if you only boot from eMMC.

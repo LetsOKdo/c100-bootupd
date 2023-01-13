@@ -1,0 +1,91 @@
+#!/bin/bash
+
+set -euo pipefail
+shopt -s nullglob
+
+LC_ALL="C"
+LANG="C"
+LANGUAGE="C"
+
+EMMC=""
+
+for i in {0..3}
+do
+    if [[ -b /dev/mmcblk${i}boot0 ]]
+    then
+        echo "Found eMMC device /dev/mmcblk${i}."
+        EMMC="/dev/mmcblk${i}"
+        break
+    fi
+done
+
+if [[ -z "$EMMC" ]]
+then
+    echo "Found no eMMC device. Update failed!" >&2
+    exit 1
+fi
+
+find_partition_by_partlabel() {
+    local disk="$1" partlabel="$2" part=
+    part="$(blkid | grep "$disk" | grep "PARTLABEL=\"$partlabel\"" | awk '{print $1}')"
+    echo "${part/:}"
+}
+
+PART_APP="$(find_partition_by_partlabel "$EMMC" "APP")"
+if [[ -z "$PART_APP" ]]
+then
+    echo "APP partition is missing. Update failed!" >&2
+    exit 1
+fi
+
+MNT="$(mktemp -d)"
+trap 'umount "$MNT"; rm -r "$MNT"' EXIT
+mount "$PART_APP" "$MNT"
+
+AVAILABLE_VERSION="$(cat /usr/share/doc/c100-bootupd/VERSION)"
+INSTALLED_VERSION=""
+if [[ -f "$MNT/etc/c100-bootupd.version" ]]
+then
+    INSTALLED_VERSION="$(cat "$MNT/etc/c100-bootupd.version")"
+fi
+
+if [[ ! "$AVAILABLE_VERSION" > "$INSTALLED_VERSION" ]]
+then
+    echo "Installed version $INSTALLED_VERSION is equal or newer than $AVAILABLE_VERSION. Skip update." >&2
+    exit
+fi
+
+cp "/usr/share/c100-bootupd/nv_boot_control.conf" "$MNT/etc/nv_boot_control.conf"
+cp "/usr/share/c100-bootupd/nv_boot_control.service" "$MNT/etc/systemd/system/nv_boot_control.service"
+cp "/usr/share/c100-bootupd/tegra210-p3448-common-sdmmc3.dtbo" "$MNT/boot/tegra210-p3448-common-sdmmc3.dtbo"
+cp "/usr/share/c100-bootupd/u-boot-preboot.scr" "$MNT/u-boot-preboot.scr"
+
+for i in LNX LNX-1
+do
+    PART_DTB="$(find_partition_by_partlabel "$EMMC" "$i")"
+    if [[ -n "$PART_DTB" ]]
+    then
+        dd if="/usr/share/c100-bootupd/boot.img.encrypt" "of=$PART_DTB"
+    fi
+done
+
+cp "/usr/share/doc/c100-bootupd/VERSION" "$MNT/etc/c100-bootupd.version"
+sync
+
+echo "Bootloader has been updated to version $AVAILABLE_VERSION."
+
+cat << EOF > /dev/console
+ ██████╗ ██╗ ██████╗  ██████╗ 
+██╔════╝███║██╔═████╗██╔═████╗
+██║     ╚██║██║██╔██║██║██╔██║
+██║      ██║████╔╝██║████╔╝██║
+╚██████╗ ██║╚██████╔╝╚██████╔╝
+ ╚═════╝ ╚═╝ ╚═════╝  ╚═════╝
+************************************************************************
+Your system's bootloader has been updated to version $AVAILABLE_VERSION.
+
+The device will now shutdown to apply the change.
+Please wait until the device is fully off before turning it on again.
+************************************************************************
+EOF
+poweroff
