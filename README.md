@@ -48,9 +48,11 @@ sudo umount /mnt
 
 ## Create bootloader update image
 
+Currently the image is based on the official [JetPack 4.6.1 image](https://developer.nvidia.com/embedded/l4t/r32_release_v7.1/jp_4.6.1_b110_sd_card/jeston_nano/jetson-nano-jp461-sd-card-image.zip).
+
 The following steps create a modified microSD image that can be used to automatically update eMMC bootloader:
 
 ```bash
-# Currently the original image has to be name as sd-blob-b01.img
+# Uncompress the original image as sd-blob-b01.img
 make image
 ```
