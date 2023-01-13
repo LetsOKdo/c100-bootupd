@@ -14,7 +14,4 @@ then
     echo [C100] Installing tegra210-p3448-common-sdmmc3.dtbo
     load mmc 0:1 ${scriptaddr} /boot/tegra210-p3448-common-sdmmc3.dtbo
     save mmc 1:1 ${scriptaddr} /boot/tegra210-p3448-common-sdmmc3.dtbo ${filesize}
-    echo [C100] Installing extlinux-mmcblk1p1.conf
-    load mmc 0:1 ${scriptaddr} /boot/extlinux/extlinux-mmcblk1p1.conf
-    save mmc 1:1 ${scriptaddr} /boot/extlinux/extlinux.conf ${filesize}
 fi

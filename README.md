@@ -14,13 +14,17 @@ This means the following changes are required to boot unmodified NVIDIA image on
 
 However, due to U-Boot's incomplete ext4 write support, we will have to install a systemd unit to perform the step 3 instead.
 
+Another issue is that NVIDIA kernel specified 1.8V UHS mode, which is not supported in U-Boot. UHS mode [presists after soft reset](https://forums.developer.nvidia.com/t/jetson-nano-warm-resets-fail-with-u-boot-no-partition-table-errors/192511) so U-Boot cannot read SD card after reboot.
+
+As such, we have to completely delete the old SDMMC3 node (device tree overlay cannot delete node or property), and recreate it in our overlay. We also disabled voltage regultor to switch signal voltage to 1.8V. A side effect is that SDMMC3 then becomes `mmcblk0`, which allowed us to skip step 4.
+
 ## Build and installation
 
 Please first download the following Jetson Linux R32.7.3 archives from [NVIDIA](https://developer.nvidia.com/embedded/linux-tegra-r3273):
 
 * Driver Package (BSP): [Jetson-210_Linux_R32.7.3_aarch64.tbz2](https://developer.nvidia.com/downloads/remetpack-463r32releasev73t210jetson-210linur3273aarch64tbz2)
 * Sample Root Filesystem: [Tegra_Linux_Sample-Root-Filesystem_R32.7.3_aarch64.tbz2](https://developer.nvidia.com/downloads/remeleasev73t210tegralinusample-root-filesystemr3273aarch64tbz2)
-* [Optional] Driver Package (BSP) Sources: [public_sources.tbz2](https://developer.nvidia.com/downloads/remack-sdksjetpack-463r32releasev73sourcest210publicsourcestbz2)
+* Driver Package (BSP) Sources: [public_sources.tbz2](https://developer.nvidia.com/downloads/remack-sdksjetpack-463r32releasev73sourcest210publicsourcestbz2)
 
 Then please follow these steps to build and prepare your OKdo Nano C100:
 

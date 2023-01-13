@@ -1,3 +1,6 @@
+#include <dt-bindings/clock/tegra210-car.h>
+#include <dt-bindings/memory/tegra-swgroup.h>
+
 /dts-v1/;
 /plugin/;
 
@@ -7,11 +10,129 @@
 	compatible = "nvidia,p3542-0000+p3448-0003", "nvidia,p3449-0000-a02+p3448-0000-a02","nvidia,p3449-0000-a01+p3448-0000-a01", "nvidia,p3449-0000-b00+p3448-0002-b00", "nvidia,jetson-nano", "nvidia,tegra210";
 
 	fragment@0 {
-		target = <&sdmmc3>;
+		target-path = "/";
 		__overlay__ {
-			status = "okay";
-			nvidia,vmmc-always-on;
-			vmmc-supply = <&p3448_vdd_3v3_sd>;
+			sdmmc3: sdhci@700b0400 {
+				compatible = "nvidia,tegra210-sdhci";
+				reg = <0x0 0x700b0400 0x0 0x200>;
+				interrupts = < 0 19 0x04 >;
+				aux-device-name = "sdhci-tegra.2";
+				iommus = <&smmu TEGRA_SWGROUP_SDMMC3A>;
+				nvidia,runtime-pm-type = <0>;
+				clocks = <&tegra_car TEGRA210_CLK_SDMMC3>,
+					<&tegra_car TEGRA210_CLK_PLL_P>,
+					<&tegra_car TEGRA210_CLK_PLL_C4_OUT2>,
+					<&tegra_car TEGRA210_CLK_SDMMC_LEGACY>;
+				clock-names = "sdmmc", "pll_p", "pll_c4_out2", "sdmmc_legacy_tm";
+				resets = <&tegra_car TEGRA210_CLK_SDMMC3>;
+				reset-names = "sdhci";
+				status = "okay";
+				tap-delay = <3>;
+				trim-delay = <3>;
+				mmc-ocr-mask = <3>;
+				max-clk-limit = <204000000>;
+				ddr-clk-limit = <48000000>;
+				bus-width = <4>;
+				calib-3v3-offsets = <0x007D>;
+				calib-1v8-offsets = <0x7B7B>;
+				compad-vref-3v3 = <0x7>;
+				compad-vref-1v8 = <0x7>;
+				pll_source = "pll_p", "pll_c4_out2";
+				ignore-pm-notify;
+				cap-mmc-highspeed;
+				cap-sd-highspeed;
+				nvidia,en-io-trim-volt;
+				nvidia,en-periodic-calib;
+				cd-inverted;
+				wp-inverted;
+				pwrdet-support;
+				nvidia,min-tap-delay = <106>;
+				nvidia,max-tap-delay = <185>;
+				pinctrl-names = "sdmmc_schmitt_enable", "sdmmc_schmitt_disable", "sdmmc_clk_schmitt_enable", "sdmmc_clk_schmitt_disable", "sdmmc_drv_code", "sdmmc_default_drv_code", "sdmmc_e_33v_enable", "sdmmc_e_33v_disable";
+				pinctrl-0 = <&sdmmc3_schmitt_enable_state>;
+				pinctrl-1 = <&sdmmc3_schmitt_disable_state>;
+				pinctrl-2 = <&sdmmc3_clk_schmitt_enable_state>;
+				pinctrl-3 = <&sdmmc3_clk_schmitt_disable_state>;
+				pinctrl-4 = <&sdmmc3_drv_code_1_8V>;
+				pinctrl-5 = <&sdmmc3_default_drv_code_3_3V>;
+				pinctrl-6 = <&sdmmc3_e_33V_enable>;
+				pinctrl-7 = <&sdmmc3_e_33V_disable>;
+				vqmmc-supply = <&max77620_ldo6>;
+				vmmc-supply = <&p3448_vdd_3v3_sd>;
+				uhs-mask = <0>;
+				nvidia,vmmc-always-on;
+				no-1-8-v;
+				
+				prod-settings {
+					#prod-cells = <3>;
+
+					prod_c_ds {
+						prod = <0x00000100 0x00FF0000 0x00010000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x3000007D>;
+					};
+					prod_c_hs {
+						prod = <0x00000100 0x00FF0000 0x00010000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x3000007D>;
+					};
+					prod_c_sdr12 {
+						prod = <0x00000100 0x00FF0000 0x00010000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x30007B7B>;
+					};
+					prod_c_sdr25 {
+						prod = <0x00000100 0x00FF0000 0x00010000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x30007B7B>;
+					};
+					prod_c_sdr50 {
+						prod = <0x00000100 0x00FF0000 0x00010000
+							0x000001C0 0x0000E000 0x00008000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x30007B7B>;
+					};
+					prod_c_sdr104 {
+						prod = <0x00000100 0x00FF0000 0x00010000
+							0x000001C0 0x0000E000 0x00004000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x30007B7B>;
+					};
+					prod_c_ddr52 {
+						prod = <0x00000100 0x1FFF0000 0x00000000
+							0x000001E0 0x0000000F 0x00000007
+							0x000001E4 0x30077F7F 0x30007B7B>;
+					};
+
+					prod {
+						prod = <
+							0x0000100 0x1FFF000E 0x3090028	// SDMMC_VENDOR_CLOCK_CNTRL_0	28:24=TRIM_VAL	0x5
+											//				23:16=TAP_VAL	0x9
+											//				05:05=SDR50_TUNING_OVERRIDE	0x1
+											//				03:03=PADPIPE_CLKEN_OVERRIDE	0x1
+											// 				02:02=SPI_MODE_CLKEN_OVERRIDE	0x0
+											// 				01:01=INPUT_IO_CLK	0x0
+							0x00001C0 0x08001FC0 0x8000040	// SDMMC_VENDOR_TUNING_CNTRL0_0	12:06=MUL_M	0x1
+											//				27:27=RETUNING_REQ_EN_ON_CRC_ERR_DETECTION	0x1
+							0x00001C4 0x00000077 0x0	// SDMMC_VENDOR_TUNING_CNTRL1_0 02:00=STEP_SIZE_SDR50	0x0
+											// 				06:04=STEP_SIZE_SDR104_HS200	0x0
+							0x0000120 0x00020001 0x00001	// SDMMC_VENDOR_MISC_CNTRL_0	0:0=ERASE_TIMEOUT_LIMIT	0x1
+											// 				17:17=SDMMC_SPARE1[1]	0x0
+							0x0000128 0x43000000 0x00000000	// SDMMC_VENDOR_MISC_CNTRL2_0	30:30=SDMMC_CLK_OVR_ON 0x0
+											//				25:25=ADMA3_CLKEN_OVERRIDE	0x0
+											//				24:24=CQE_CLKEN_OVERRIDE	0x0
+							0x00001F0 0x00080000 0x00080000	// SDMMC_IO_SPARE_0		19:19=SPARE_OUT[3] 0x1
+						>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&max77620_ldo6>;
+		__overlay__ {
+			regulator-min-microvolt = <3300000>;
 		};
 	};
 };

@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ZHANG Yuntian <yt@radxa.com>
+Date: Fri, 13 Jan 2023 11:57:16 +0800
+Subject: [PATCH] Remove sdmm3 node
+
+Signed-off-by: ZHANG Yuntian <yt@radxa.com>
+---
+ cmd/pxe_utils.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/cmd/pxe_utils.c b/cmd/pxe_utils.c
+index fa36057dca..b873ed99fe 100644
+--- a/cmd/pxe_utils.c
++++ b/cmd/pxe_utils.c
+@@ -343,7 +343,7 @@ static void label_boot_fdtoverlay(cmd_tbl_t *cmdtp, struct pxe_label *label,
+ 	struct fdt_header *working_fdt;
+ 	char *fdtoverlay_addr_env;
+ 	ulong fdtoverlay_addr;
+-	int err;
++	int node = -1, err;
+ 
+ 	/* Get the main fdt and map it */
+ 	working_fdt = map_sysmem(fdt_addr, 0);
+@@ -351,6 +351,15 @@ static void label_boot_fdtoverlay(cmd_tbl_t *cmdtp, struct pxe_label *label,
+ 	if (err)
+ 		return;
+ 
++	/* Delete broken sdmmc3 node */
++	while ((node = fdt_node_offset_by_compatible(working_fdt, node, "nvidia,tegra210-sdhci")) >= 0) {
++		if (fdt_get_base_address(working_fdt, node) == 0x700b0400) {
++			printf("Deleting existing sdmmc3 node...\n");
++			fdt_del_node(working_fdt, node);
++			break;
++		}
++	}
++
+ 	/* Get the specific overlay loading address */
+ 	fdtoverlay_addr_env = env_get("fdtoverlay_addr_r");
+ 	if (!fdtoverlay_addr_env) {
+-- 
+2.39.0
+

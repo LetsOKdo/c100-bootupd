@@ -5,7 +5,6 @@ set -euo pipefail
 MOUNT="/mnt"
 
 pushd data
-cp extlinux-mmcblk1p1.conf "$MOUNT/boot/extlinux/extlinux-mmcblk1p1.conf"
 cp nv_boot_control.conf "$MOUNT/etc/nv_boot_control.conf"
 cp nv_boot_control.service "$MOUNT/etc/systemd/system/nv_boot_control.service"
 cp tegra210-p3448-common-sdmmc3.dtbo "$MOUNT/boot/tegra210-p3448-common-sdmmc3.dtbo"
