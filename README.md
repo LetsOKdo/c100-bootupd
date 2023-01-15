@@ -20,20 +20,30 @@ As such, we have to completely delete the old SDMMC3 node (device tree overlay c
 
 ## Build and installation
 
-Please first download the following Jetson Linux R32.7.3 archives from [NVIDIA](https://developer.nvidia.com/embedded/linux-tegra-r3273):
+This repo contains git submodule. As such please use the following command to clone it:
+
+```
+git clone --recurse-submodules https://github.com/LetsOKdo/c100-bootupd.git
+```
+
+Please first download the following Jetson Linux R32.7.3 archives from [NVIDIA](https://developer.nvidia.com/embedded/linux-tegra-r3273) and put them under this project's folder:
 
 * Driver Package (BSP): [Jetson-210_Linux_R32.7.3_aarch64.tbz2](https://developer.nvidia.com/downloads/remetpack-463r32releasev73t210jetson-210linur3273aarch64tbz2)
 * Sample Root Filesystem: [Tegra_Linux_Sample-Root-Filesystem_R32.7.3_aarch64.tbz2](https://developer.nvidia.com/downloads/remeleasev73t210tegralinusample-root-filesystemr3273aarch64tbz2)
 * Driver Package (BSP) Sources: [public_sources.tbz2](https://developer.nvidia.com/downloads/remack-sdksjetpack-463r32releasev73sourcest210publicsourcestbz2)
 
-The following steps manually prepared your OKdo Nano C100 for both eMMC and microSD booting:
+The following steps then prepare your OKdo Nano C100 for both eMMC and microSD booting:
 
 ```bash
+# Run the following command to set up Linux for Tegra
+# Only need to run once!
+./init-jetpack
 # Put your C100 in recover mode first
 make flash
-# Once the flash completes, C100 will reboot.
+# Once the flash completes, C100 will reboot and contains a working system in eMMC.
 # ################################
 # If you want to enable microSD booting, please follow the reset of the guide:
+# ################################
 # Press Ctrl+C in serial console to interrupt U-Boot, and execute:
 #     ums 0 0
 # to mount internal eMMC on your computer.
