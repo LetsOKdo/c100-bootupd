@@ -1,4 +1,4 @@
-## Custom created image to use with an SD card for OKdo nano C100
+## Custom created image to use on an SD card for OKdo nano C100
 
 Click [Here](https://auto.designspark.info/okdo_images/c100.img.xz) to download the image. Use your usual flashing tool to flash the image it to the SD card.
 
