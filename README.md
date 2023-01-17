@@ -2,9 +2,14 @@
 
 Click [Here](https://auto.designspark.info/okdo_images/c100.img.xz) to download the image. Use your usual flashing tool to flash the image it to the SD card.
 
+If you don't have a tool, then here is a how to: https://www.okdo.com/getting-started/get-started-with-jetson-nano-4gb-and-csi-camera/#h-2-flash-microsd-card-toc
+
+If you are using the C100 for the first time this is all you have to do.
+
 
 ## Custom Bootloader for OKdo Nano C100
-This does only apply if you need to recreate the eMMC content to it's shipped state!
+This instruction is only needed if you want to “reset” the eMMC on the C100 to the state it had from the factory. 
+
 
 NVIDIA Jetson Nano Developer Kit (NDK) has the following hardware difference when compared to OKdo Nano C100:
 
