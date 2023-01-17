@@ -10,6 +10,7 @@ If you are using the C100 for the first time this is all you have to do.
 ## Custom Bootloader for OKdo Nano C100
 This instruction is only needed if you want to “reset” the eMMC on the C100 to the state it had from the factory. 
 
+## Background
 
 NVIDIA Jetson Nano Developer Kit (NDK) has the following hardware difference when compared to OKdo Nano C100:
 
