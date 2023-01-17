@@ -1,3 +1,8 @@
+## Custom created image for flashing to use with an SD card for OKdo nano C100
+
+Click [Here](https://auto.designspark.info/okdo_images/c100.img.xz) to download the image. use your usual flasher to flash it to an SD card.
+
+
 ## Custom Bootloader for OKdo Nano C100
 
 NVIDIA Jetson Nano Developer Kit (NDK) has the following hardware difference when compared to OKdo Nano C100:
