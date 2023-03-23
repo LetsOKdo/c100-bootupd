@@ -7,6 +7,8 @@ SHAREDIR ?= $(PREFIX)/share
 MANDIR ?= $(SHAREDIR)/man
 MNTDIR ?= /mnt
 
+REUSE_SYSTEMIMG ?=
+
 .PHONY: all
 all: build
 
@@ -95,7 +97,11 @@ replace-u-boot: Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot Linux_for_T
 .PHONY: flash
 flash: replace-u-boot
 	cd Linux_for_Tegra && \
-	sudo ./flash.sh -r jetson-nano-emmc mmcblk0p1
+	if [ "$(REUSE_SYSTEMIMG)" == "1" ]; then \
+		echo sudo ./flash.sh -r jetson-nano-emmc mmcblk0p1; \
+	else \
+		echo sudo ./flash.sh jetson-nano-emmc mmcblk0p1; \
+	fi
 
 .PHONY: flash-u-boot
 flash-u-boot: replace-u-boot
