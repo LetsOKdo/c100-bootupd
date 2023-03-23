@@ -29,7 +29,7 @@ build-u-boot: $(U-BOOT)
 
 $(SRC-U-BOOT)/u-boot.bin:
 	cd u-boot && \
-	git switch --detach tegra-l4t-r32.7.3 && \
+	git checkout tegra-l4t-r32.7.3 && \
 	git am ../patches/*.patch
 	make -C u-boot ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- p3450-0000_defconfig all
 
