@@ -77,11 +77,20 @@ build-signed: replace-u-boot
 #
 # Flash
 #
+Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot: $(U-BOOT)
+	cp u-boot/u-boot Linux_for_Tegra/bootloader/t210ref/p3450-0000
+
 Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot.bin: $(U-BOOT)
-	cp u-boot/u-boot{,.bin,.dtb,-dtb.bin} Linux_for_Tegra/bootloader/t210ref/p3450-0000
+	cp u-boot/u-boot.bin Linux_for_Tegra/bootloader/t210ref/p3450-0000
+
+Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot.dtb: $(U-BOOT)
+	cp u-boot/u-boot.dtb Linux_for_Tegra/bootloader/t210ref/p3450-0000
+
+Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot-dtb.bin: $(U-BOOT)
+	cp u-boot/u-boot-dtb.bin Linux_for_Tegra/bootloader/t210ref/p3450-0000
 
 .PHONY: replace-u-boot
-replace-u-boot: Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot.bin
+replace-u-boot: Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot.bin Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot.dtb Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot-dtb.bin
 
 .PHONY: flash
 flash: replace-u-boot
