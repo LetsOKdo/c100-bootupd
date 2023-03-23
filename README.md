@@ -30,6 +30,15 @@ Another issue is that NVIDIA kernel specified 1.8V UHS mode, which is not suppor
 
 As such, we have to completely delete the old SDMMC3 node (device tree overlay cannot delete node or property), and recreate it in our overlay. We also disabled voltage regultor to switch signal voltage to 1.8V. A side effect is that SDMMC3 then becomes `mmcblk0`, which allowed us to skip step 4.
 
+## Build dependency
+
+```
+sudo apt update
+sudo apt install build-essential bison flex git
+# When building from x86 systems, you will also need the following crossbuild depenencies
+sudo apt install crossbuild-essential-arm64 qemu-user-static binfmt-support
+```
+
 ## Build and installation
 
 This repo contains git submodule. As such please use the following command to clone it:
@@ -75,6 +84,9 @@ Currently the image is based on the official [JetPack 4.6.1 image](https://devel
 The following steps create a modified microSD image that can be used to automatically update eMMC bootloader:
 
 ```bash
+# Install build dependencies for Debian package
+# Only need to run once!
+sudo apt install build-dep .
 # Uncompress the original image as sd-blob-b01.img
 make image
 ```
