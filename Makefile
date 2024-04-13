@@ -7,7 +7,7 @@ SHAREDIR ?= $(PREFIX)/share
 MANDIR ?= $(SHAREDIR)/man
 MNTDIR ?= /mnt
 
-REUSE_SYSTEMIMG ?=
+REUSE_SYSTEMIMG ?= 0
 
 .PHONY: all
 all: build
@@ -40,7 +40,7 @@ DATA		:= $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dtbo $(SRC-DATA)/u-boot-preboo
 build-data: $(DATA)
 
 $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dtbo: $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts Linux_for_Tegra/source/kernel/hardware/nvidia/soc/tegra/kernel-include
-	cpp -x assembler-with-cpp -E -I "Linux_for_Tegra/source/kernel/hardware/nvidia/soc/tegra/kernel-include" $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts.tmp
+	cpp -nostdinc -undef -x assembler-with-cpp -E -I "Linux_for_Tegra/source/kernel/hardware/nvidia/soc/tegra/kernel-include" $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts.tmp
 	dtc -O dtb -o "$@" -@ $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts.tmp
 	rm $(SRC-DATA)/tegra210-p3448-common-sdmmc3.dts.tmp
 
@@ -98,9 +98,9 @@ replace-u-boot: Linux_for_Tegra/bootloader/t210ref/p3450-0000/u-boot Linux_for_T
 flash: replace-u-boot
 	cd Linux_for_Tegra && \
 	if [ "$(REUSE_SYSTEMIMG)" == "1" ]; then \
-		echo sudo ./flash.sh -r jetson-nano-emmc mmcblk0p1; \
+		sudo ./flash.sh -r jetson-nano-emmc mmcblk0p1; \
 	else \
-		echo sudo ./flash.sh jetson-nano-emmc mmcblk0p1; \
+		sudo ./flash.sh jetson-nano-emmc mmcblk0p1; \
 	fi
 
 .PHONY: flash-u-boot
