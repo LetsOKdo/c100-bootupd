@@ -34,7 +34,7 @@ As such, we have to completely delete the old SDMMC3 node (device tree overlay c
 
 ```
 sudo apt update
-sudo apt install build-essential bison flex git
+sudo apt install build-essential u-boot-tools bison flex git
 # When building from x86 systems, you will also need the following crossbuild depenencies
 sudo apt install crossbuild-essential-arm64 qemu-user-static binfmt-support
 ```
