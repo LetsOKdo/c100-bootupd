@@ -63,6 +63,7 @@ then
     popd
 else
     echo "Non Debian system does not support apply_binaries.sh. Skipping."
+    echo "You will not be able to run 'make flash'."
 fi
 
 echo "JetPack development environment has been set up."

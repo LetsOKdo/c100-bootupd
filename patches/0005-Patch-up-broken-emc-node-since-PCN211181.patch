@@ -1,0 +1,103 @@
+From 3b924a25dad05c47db4c87f95c99ea29d1504169 Mon Sep 17 00:00:00 2001
+From: ZHANG Yuntian <yt@radxa.com>
+Date: Thu, 12 Dec 2024 17:07:25 +0800
+Subject: [PATCH] Patch up broken emc node since PCN211181
+
+Signed-off-by: ZHANG Yuntian <yt@radxa.com>
+---
+ cmd/pxe_utils.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
+
+diff --git a/cmd/pxe_utils.c b/cmd/pxe_utils.c
+index b873ed99fe..befe4648fb 100644
+--- a/cmd/pxe_utils.c
++++ b/cmd/pxe_utils.c
+@@ -336,6 +336,15 @@ static int label_localboot(struct pxe_label *label)
+  * Loads fdt overlays specified in 'fdtoverlays'.
+  */
+ #ifdef CONFIG_OF_LIBFDT_OVERLAY
++static const char* remove_compatible[] = {
++	"nvidia,tegra210-sdhci",
++	"nvidia,tegra210-emc"
++};
++static const u64 remove_base_address[] = {
++	0x700b0400,
++	0x7001b000
++};
++#define countof(i) (sizeof(i) / sizeof(*i))
+ static void label_boot_fdtoverlay(cmd_tbl_t *cmdtp, struct pxe_label *label,
+ 		ulong fdt_addr)
+ {
+@@ -344,6 +353,7 @@ static void label_boot_fdtoverlay(cmd_tbl_t *cmdtp, struct pxe_label *label,
+ 	char *fdtoverlay_addr_env;
+ 	ulong fdtoverlay_addr;
+ 	int node = -1, err;
++	int i;
+ 
+ 	/* Get the main fdt and map it */
+ 	working_fdt = map_sysmem(fdt_addr, 0);
+@@ -352,11 +362,13 @@ static void label_boot_fdtoverlay(cmd_tbl_t *cmdtp, struct pxe_label *label,
+ 		return;
+ 
+ 	/* Delete broken sdmmc3 node */
+-	while ((node = fdt_node_offset_by_compatible(working_fdt, node, "nvidia,tegra210-sdhci")) >= 0) {
+-		if (fdt_get_base_address(working_fdt, node) == 0x700b0400) {
+-			printf("Deleting existing sdmmc3 node...\n");
+-			fdt_del_node(working_fdt, node);
+-			break;
++	for (i = 0; i < countof(remove_base_address); i++) {
++		while ((node = fdt_node_offset_by_compatible(working_fdt, node, remove_compatible[i])) >= 0) {
++			if (fdt_get_base_address(working_fdt, node) == remove_base_address[i]) {
++				printf("Deleting existing %s node at %llX...\n", remove_compatible[i], remove_base_address[i]);
++				fdt_del_node(working_fdt, node);
++				break;
++			}
+ 		}
+ 	}
+ 
+@@ -402,7 +414,8 @@ static void label_boot_fdtoverlay(cmd_tbl_t *cmdtp, struct pxe_label *label,
+ 		}
+ 
+ 		/* Resize main fdt */
+-		fdt_shrink_to_minimum(working_fdt, 8192);
++		// Bump buffer to 96K to load extra large overlays
++		fdt_shrink_to_minimum(working_fdt, 1024 * 96);
+ 
+ 		blob = map_sysmem(fdtoverlay_addr, 0);
+ 		err = fdt_check_header(blob);
+@@ -1319,7 +1332,7 @@ void destroy_pxe_menu(struct pxe_menu *cfg)
+  * files it includes). The resulting pxe_menu struct can be free()'d by using
+  * the destroy_pxe_menu() function.
+  */
+-static const char sdmmc3_overlay[] = "/boot/tegra210-p3448-common-sdmmc3.dtbo";
++static const char additional_overlays[] = "/boot/tegra210-p3448-common-sdmmc3.dtbo /boot/tegra210-porg-p3448-emc-a00.dtbo";
+ struct pxe_menu *parse_pxefile(cmd_tbl_t *cmdtp, unsigned long menucfg)
+ {
+ 	struct pxe_menu *cfg;
+@@ -1350,19 +1363,19 @@ struct pxe_menu *parse_pxefile(cmd_tbl_t *cmdtp, unsigned long menucfg)
+ 		label = list_entry(pos, struct pxe_label, list);
+ 
+ 		if (!label->fdtoverlays) {
+-			label->fdtoverlays = malloc(sizeof(sdmmc3_overlay));
++			label->fdtoverlays = malloc(sizeof(additional_overlays));
+ 			if (label->fdtoverlays) {
+-				memcpy(label->fdtoverlays, sdmmc3_overlay, sizeof(sdmmc3_overlay));
++				memcpy(label->fdtoverlays, additional_overlays, sizeof(additional_overlays));
+ 			} else {
+ 				printf("Unable to allocate memory for fdtoverlays injection!\n");
+ 			}
+ 		} else {
+ 			r = strlen(label->fdtoverlays);
+-			buf = malloc(r + sizeof(sdmmc3_overlay));
++			buf = malloc(r + sizeof(additional_overlays));
+ 			if (buf) {
+ 				memcpy(buf, label->fdtoverlays, r);
+ 				buf[r] = ' ';
+-				memcpy(buf + r + 1, sdmmc3_overlay, sizeof(sdmmc3_overlay));
++				memcpy(buf + r + 1, additional_overlays, sizeof(additional_overlays));
+ 				free(label->fdtoverlays);
+ 				label->fdtoverlays = buf;
+ 			} else {
+-- 
+2.34.1
+
