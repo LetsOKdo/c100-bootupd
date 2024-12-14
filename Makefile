@@ -152,7 +152,7 @@ clean-data:
 #
 .PHONY: dch
 dch: debian/changelog
-	gbp dch --debian-branch=main
+	EDITOR=true gbp dch --ignore-branch --multimaint-merge --commit --release --dch-opt=--upstream
 
 .PHONY: deb
 deb: debian build-signed
