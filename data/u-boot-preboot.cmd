@@ -26,4 +26,13 @@ then
         load mmc 0:1 ${scriptaddr} /boot/tegra210-p3448-common-sdmmc3.dtbo
         save mmc 1:1 ${scriptaddr} /boot/tegra210-p3448-common-sdmmc3.dtbo ${filesize}
     fi
+
+    if test ! -e mmc 1:1 /boot/tegra210-porg-p3448-emc-a00.dtbo
+    then
+        echo ============
+        echo [C100] Installing tegra210-porg-p3448-emc-a00.dtbo...
+        echo ============
+        load mmc 0:1 ${scriptaddr} /boot/tegra210-porg-p3448-emc-a00.dtbo
+        save mmc 1:1 ${scriptaddr} /boot/tegra210-porg-p3448-emc-a00.dtbo ${filesize}
+    fi
 fi
