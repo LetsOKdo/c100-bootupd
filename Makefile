@@ -141,7 +141,7 @@ clean-deb:
 
 .PHONY: clean-u-boot
 clean-u-boot:
-	rm -rf $(U_BOOT)
+	rm -rf $(U-BOOT)
 
 .PHONY: clean-data
 clean-data:
