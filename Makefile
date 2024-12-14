@@ -158,6 +158,10 @@ dch: debian/changelog
 deb: debian build-signed
 	debuild --no-lintian --lintian-hook "lintian --fail-on error,warning --suppress-tags bad-distribution-in-changes-file -- %p_%v_*.changes" --no-sign -b
 
+sd-blob-b01.img: jetson-nano-jp461-sd-card-image.zip
+	unzip $<
+	touch $@
+
 .PHONY: image
 image: deb sd-blob-b01.img
 	cp sd-blob-b01.img c100.img
