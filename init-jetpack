@@ -10,9 +10,11 @@ then
     sudo apt-get install -y libxml2-utils
 fi
 
-BSP_BINARY="Jetson-210_Linux_R32.7.3_aarch64.tbz2"
+JETPACK_VERSION="32.7.6"
+
+BSP_BINARY="Jetson-210_Linux_R${JETPACK_VERSION}_aarch64.tbz2"
 BSP_SOURCE="public_sources.tbz2"
-ROOTFS_BINARY="Tegra_Linux_Sample-Root-Filesystem_R32.7.3_aarch64.tbz2"
+ROOTFS_BINARY="Tegra_Linux_Sample-Root-Filesystem_R${JETPACK_VERSION}_aarch64.tbz2"
 
 # Download 
 # * Driver Package (BSP)
