@@ -5,3 +5,8 @@
 /VERSION
 /*.img*
 /jetson-nano-*-sd-card-image.zip
+hardware-nvidia-platform-t210-porg.patch
+LICENSE.GPLv2-only
+LICENSE.NvidiaProprietary
+manifest.txt
+README-overlay.txt

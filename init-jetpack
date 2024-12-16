@@ -15,6 +15,7 @@ JETPACK_VERSION="32.7.6"
 BSP_BINARY="Jetson-210_Linux_R${JETPACK_VERSION}_aarch64.tbz2"
 BSP_SOURCE="public_sources.tbz2"
 ROOTFS_BINARY="Tegra_Linux_Sample-Root-Filesystem_R${JETPACK_VERSION}_aarch64.tbz2"
+PCN211181_OVERLAY="overlay_32.7.5_PCN211181.tbz2"
 
 # Download 
 # * Driver Package (BSP)
@@ -22,7 +23,7 @@ ROOTFS_BINARY="Tegra_Linux_Sample-Root-Filesystem_R${JETPACK_VERSION}_aarch64.tb
 # * Driver Package (BSP) Sources
 #from https://developer.nvidia.com/embedded/linux-tegra-r3273
 ARCHIVE_AVAILABLE="true"
-for i in "$BSP_BINARY" "$BSP_SOURCE" "$ROOTFS_BINARY"
+for i in "$BSP_BINARY" "$BSP_SOURCE" "$ROOTFS_BINARY" "$PCN211181_OVERLAY"
 do
     if [[ ! -f "$i" ]]
     then
@@ -54,6 +55,9 @@ pushd "Linux_for_Tegra/rootfs"
 echo "Decompressing $ROOTFS_BINARY..."
 sudo tar xpf ../../$ROOTFS_BINARY
 popd
+
+echo "Decompressing $PCN211181_OVERLAY..."
+tar xf $PCN211181_OVERLAY
 
 if [[ "$ID_LIKE" == "debian" ]]
 then

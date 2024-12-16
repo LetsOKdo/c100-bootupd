@@ -56,6 +56,7 @@ Please first download the following Jetson Linux R32.7.6 archives from [NVIDIA](
 * Driver Package (BSP): [Jetson-210_Linux_R32.7.6_aarch64.tbz2](https://developer.nvidia.com/downloads/embedded/l4t/r32_release_v7.6/t210/jetson-210_linux_r32.7.6_aarch64.tbz2)
 * Sample Root Filesystem: [Tegra_Linux_Sample-Root-Filesystem_R32.7.6_aarch64.tbz2](https://developer.nvidia.com/downloads/embedded/l4t/r32_release_v7.6/t210/tegra_linux_sample-root-filesystem_r32.7.6_aarch64.tbz2)
 * Driver Package (BSP) Sources: [public_sources.tbz2](https://developer.nvidia.com/downloads/embedded/l4t/r32_release_v7.6/sources/t210/public_sources.tbz2)
+* The overlay for new memory support from PCN211181: [overlay_32.7.5_PCN211181.tbz2](https://developer.nvidia.com/downloads/embedded/L4T/r32_Release_v7.5/overlay_32.7.5_PCN211181.tbz2)
 
 The following steps then prepare your OKdo Nano C100 for both eMMC and microSD booting:
 
