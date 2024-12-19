@@ -57,7 +57,7 @@ sudo tar xpf ../../$ROOTFS_BINARY
 popd
 
 echo "Decompressing $PCN211181_OVERLAY..."
-tar xf $PCN211181_OVERLAY
+sudo tar xf $PCN211181_OVERLAY
 
 if [[ "$ID_LIKE" == "debian" ]]
 then
