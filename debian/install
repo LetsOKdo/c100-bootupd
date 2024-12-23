@@ -2,6 +2,6 @@ src/c100-bootupd usr/sbin/
 man/c100-bootupd.8 /usr/share/man/man8
 data/nv_boot_control.conf usr/share/c100-bootupd
 data/nv_boot_control.service usr/share/c100-bootupd
-data/tegra210-p3448-common-sdmmc3.dtbo usr/share/c100-bootupd
+data/*.dtbo usr/share/c100-bootupd
 data/u-boot-preboot.scr usr/share/c100-bootupd
 Linux_for_Tegra/bootloader/signed/boot.img.encrypt usr/share/c100-bootupd
