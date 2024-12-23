@@ -1,3 +1,41 @@
+c100-bootupd (0.1.1) stable; urgency=medium
+
+  [ ZHANG Yuntian ]
+  * Update u-boot-preboot.cmd
+  * Add download link for the base image
+  * Add license
+  * Update README
+  * Fix incorrect submodule hash
+  * Use git checkout for older version of git
+  * Remove bashism
+  * Add REUSE_SYSTEMIMG option
+  * Update build dependency
+  * feat: support parallel build
+  * feat: support decompressing default SD image
+  * fix: typo in U-BOOT variable prevents clean-u-boot from working
+  * chore: update NVIDIA SDK to 32.7.6
+  * feat: make dch will now update changelog automatically
+  * feat: add EMC overlay for PCN211181
+  * feat: install EMC overlay to microSD
+  * feat: support loading EMC overlay on boot
+  * docs: update with the latest SDK and changes
+  * feat: apply PCN211181 overlay
+  * fix: overlay wants to overwritten some root owned files
+
+  [ OKdoTech ]
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+
+  [ Adis Veletanlic ]
+  * Fix build (#2)
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Mon, 23 Dec 2024 16:35:28 +0800
+
 c100-bootupd (0.1.0) stable; urgency=medium
 
   * Initial release
