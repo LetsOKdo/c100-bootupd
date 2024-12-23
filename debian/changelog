@@ -1,3 +1,10 @@
+c100-bootupd (0.2.0) stable; urgency=medium
+
+  [ ZHANG Yuntian ]
+  * fix: include missing overlay for PCN211181
+
+ -- "Radxa Computer Co., Ltd" <dev@radxa.com>  Mon, 23 Dec 2024 16:56:19 +0800
+
 c100-bootupd (0.1.1) stable; urgency=medium
 
   [ ZHANG Yuntian ]
